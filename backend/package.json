@@ -1,0 +1,20 @@
+{
+  "name": "pcstore-backend",
+  "version": "1.0.0",
+  "description": "Backend REST API cho ứng dụng bán linh kiện máy tính PC Store",
+  "main": "src/server.js",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js",
+    "reset-data": "node src/resetData.js",
+    "test": "node --test test/api.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.22.3",
+    "jsonwebtoken": "^9.0.3"
+  }
+}

@@ -1,0 +1,5 @@
+node_modules/
+# APK nặng hơn giới hạn 100MB của GitHub, gửi file riêng
+*.apk
+*.log
+backend/data/

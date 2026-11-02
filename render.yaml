@@ -1,0 +1,16 @@
+# Cấu hình triển khai backend lên Render.com (New > Blueprint > chọn repo này)
+services:
+  - type: web
+    name: pcstore-api
+    runtime: node
+    plan: free
+    region: singapore
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: JWT_SECRET
+        generateValue: true

@@ -1,0 +1,50 @@
+﻿Bỏ ảnh sản phẩm vào thư mục này, đặt tên file theo MÃ sản phẩm.
+Định dạng: .jpg, .jpeg, .png, .webp hoặc .gif  (ví dụ: p001.jpg)
+Nên dùng ảnh vuông, nền trắng, khoảng 600x600 – 1000x1000 pixel.
+Không cần khởi động lại backend; trong app kéo xuống để làm mới là thấy ảnh.
+
+MÃ    | SẢN PHẨM
+p001  | Intel Core i5-14400F
+p002  | Intel Core i7-14700K
+p003  | Intel Core Ultra 7 265K
+p004  | AMD Ryzen 5 7600
+p005  | AMD Ryzen 7 9800X3D
+p006  | AMD Ryzen 9 9950X
+p007  | ASUS Dual GeForce RTX 4060 8GB
+p008  | MSI GeForce RTX 5070 Ventus 2X 12G
+p009  | Gigabyte RTX 5080 Gaming OC 16G
+p010  | Sapphire Pulse Radeon RX 9070 XT 16GB
+p011  | ASUS TUF Gaming B760M-Plus WiFi DDR5
+p012  | MSI MAG B650 Tomahawk WiFi
+p013  | Gigabyte Z890 Aorus Elite WiFi7
+p014  | ASRock B650M Pro RS
+p015  | Kingston Fury Beast 16GB (2x8GB) DDR5 5600
+p016  | Corsair Vengeance RGB 32GB (2x16GB) DDR5 6000
+p017  | G.Skill Trident Z5 RGB 64GB (2x32GB) DDR5 6400
+p018  | TeamGroup T-Force Delta RGB 16GB DDR4 3600
+p019  | Samsung 990 Pro 1TB NVMe PCIe 4.0
+p020  | WD Black SN850X 2TB NVMe
+p021  | Kingston NV3 500GB NVMe
+p022  | Seagate BarraCuda 2TB HDD 7200rpm
+p023  | Corsair RM750e 750W 80 Plus Gold
+p024  | MSI MAG A650BN 650W 80 Plus Bronze
+p025  | Seasonic Focus GX-1000 1000W 80 Plus Gold
+p026  | NZXT H5 Flow RGB
+p027  | Lian Li O11 Dynamic EVO
+p028  | Xigmatek Gaming X 3FX
+p029  | DeepCool AK400 Digital
+p030  | NZXT Kraken 360 RGB
+p031  | Thermalright Peerless Assassin 120 SE
+p032  | LG UltraGear 27GR75Q 27" 2K 165Hz
+p033  | Samsung Odyssey G5 32" 2K 165Hz Cong
+p034  | Dell UltraSharp U2424H 24" IPS
+p035  | ASUS ROG Swift PG27AQDM 27" OLED 240Hz
+p036  | Logitech G Pro X TKL Lightspeed
+p037  | Akko 5075B Plus
+p038  | Razer BlackWidow V4 X
+p039  | Logitech G502 X Plus
+p040  | Razer DeathAdder V3 Pro
+p041  | Logitech G304 Lightspeed
+p042  | HyperX Cloud III
+p043  | SteelSeries Arctis Nova 7 Wireless
+p044  | Razer BlackShark V2 X

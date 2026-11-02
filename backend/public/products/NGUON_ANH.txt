@@ -1,0 +1,37 @@
+﻿Nguồn ảnh sản phẩm (tải tự động từ gearvn.com, chỉ dùng cho mục đích học tập/demo).
+
+p001 | Intel Core i5-14400F | https://gearvn.com/products/bo-vi-xu-ly-intel-core-i5-14400f
+p002 | Intel Core i7-14700K | https://gearvn.com/products/intel-core-i7-14700kf
+p003 | Intel Core Ultra 7 265K | https://gearvn.com/products/bo-vi-xu-ly-intel-core-ultra-7-265k
+p004 | AMD Ryzen 5 7600 | https://gearvn.com/products/amd-ryzen-5-7600
+p005 | AMD Ryzen 7 9800X3D | https://gearvn.com/products/bo-vi-xu-ly-amd-ryzen-7-9800x3d
+p006 | AMD Ryzen 9 9950X | https://gearvn.com/products/bo-vi-xu-ly-amd-ryzen-9-9950x
+p007 | ASUS Dual GeForce RTX 4060 8GB | https://gearvn.com/products/card-man-hinh-asus-dual-geforce-rtx-4060-v2-oc-edition-8gb-gddr6-dual-rtx4060-o8g-v2
+p009 | Gigabyte RTX 5080 Gaming OC 16G | https://gearvn.com/products/card-man-hinh-gigabyte-geforce-rtx-5080-gaming-oc-16g
+p011 | ASUS TUF Gaming B760M-Plus WiFi DDR5 | https://gearvn.com/products/bo-mach-chu-asus-tuf-gaming-b760m-plus-wifi-ii-ddr5
+p013 | Gigabyte Z890 Aorus Elite WiFi7 | https://gearvn.com/products/bo-mach-chu-gigabyte-z890-aorus-elite-wifi7-ddr5
+p015 | Kingston Fury Beast 16GB (2x8GB) DDR5 5600 | https://gearvn.com/products/ram-kingston-fury-beast-16gb-1x16gb-buss-5600-ddr5-kf556c40bb-16wp
+p016 | Corsair Vengeance RGB 32GB (2x16GB) DDR5 6000 | https://gearvn.com/products/ram-corsair-vengeance-rgb-32gb-2x16gb-cl38-6000mhz-grey-ddr5-cmh32gx5m2b6000z38
+p017 | G.Skill Trident Z5 RGB 64GB (2x32GB) DDR5 6400 | https://gearvn.com/products/ram-g-skill-trident-z5-rgb-64gb-2x16gb-6000-ddr5-black-f5-6000j3636f32gx2-tz5rk (cùng dòng sản phẩm)
+p018 | TeamGroup T-Force Delta RGB 16GB DDR4 3600 | https://gearvn.com/products/ram-t-group-t-force-delta-1x16gb-3600-rgb-black (cùng dòng sản phẩm)
+p019 | Samsung 990 Pro 1TB NVMe PCIe 4.0 | https://gearvn.com/products/o-cung-ssd-samsung-990-pro-1tb-pcie-gen4-nvme-mz-v9p1t0bw
+p021 | Kingston NV3 500GB NVMe | https://gearvn.com/products/o-cung-ssd-kingston-nv3-500gb-m-2-pcie-nvme-gen4
+p022 | Seagate BarraCuda 2TB HDD 7200rpm | https://gearvn.com/products/hdd-seagate-barracuda-2tb-7200rpm
+p023 | Corsair RM750e 750W 80 Plus Gold | https://gearvn.com/products/750w-nguon-corsair-rm750e-80-plus-gold-full-modular
+p024 | MSI MAG A650BN 650W 80 Plus Bronze | https://gearvn.com/products/nguon-may-tinh-msi-mag-a650bnl-80-plus-bronze-650w
+p027 | Lian Li O11 Dynamic EVO | https://gearvn.com/products/vo-may-tinh-lian-li-o11d-evo-rgb-black
+p029 | DeepCool AK400 Digital | https://gearvn.com/products/thiet-bi-tan-nhiet-deepcool-ak400-digital-argb
+p033 | Samsung Odyssey G5 32" 2K 165Hz Cong | https://gearvn.com/products/man-hinh-cong-samsung-ls32cg552-32-2k-165hz-chuyen-game
+p034 | Dell UltraSharp U2424H 24" IPS | https://gearvn.com/products/man-hinh-dell-ultrasharp-u2424he-24-ips-120hz-usbc
+p035 | ASUS ROG Swift PG27AQDM 27" OLED 240Hz | https://gearvn.com/products/man-hinh-asus-rog-swift-pg27aqdm-27-oled-2k-240hz-hdr10-gsync-chuyen-game
+p036 | Logitech G Pro X TKL Lightspeed | https://gearvn.com/products/ban-phim-logitech-g-pro-x-tkl-light-speed-tactile-switch-black
+p037 | Akko 5075B Plus | https://gearvn.com/products/ban-phim-akko-5075b-plus-black-world-tour-viet-nam
+p038 | Razer BlackWidow V4 X | https://gearvn.com/products/ban-phim-razer-blackwidow-v4-x-yellow-switch
+p039 | Logitech G502 X Plus | https://gearvn.com/products/chuot-logitech-g502-x-plus-lightspeed-black
+p040 | Razer DeathAdder V3 Pro | https://gearvn.com/products/chuot-razer-deathadder-v3-hyperspeed-wireless (cùng dòng sản phẩm)
+p041 | Logitech G304 Lightspeed | https://gearvn.com/products/chuot-gaming-khong-day-logitech-g304-x-lightspeed-black
+p042 | HyperX Cloud III | https://gearvn.com/products/tai-nghe-hp-hyperx-cloud-iii-black (cùng dòng sản phẩm)
+p043 | SteelSeries Arctis Nova 7 Wireless | https://gearvn.com/products/tai-nghe-steelseries-arctis-nova-7-dragon-edition
+p044 | Razer BlackShark V2 X | https://gearvn.com/products/tai-nghe-razer-blackshark-v2-x
+
+Chưa có ảnh (app hiển thị icon): p008, p010, p012, p014, p020, p025, p026, p028, p030, p031, p032
