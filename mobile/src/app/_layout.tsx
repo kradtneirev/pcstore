@@ -53,9 +53,7 @@ export default function RootLayout() {
             <Stack.Screen name="checkout" options={{ title: 'Thanh toán' }} />
             <Stack.Screen name="payment/[id]" options={{ title: 'Thanh toán đơn hàng' }} />
             <Stack.Screen name="order/[id]" options={{ title: 'Chi tiết đơn hàng' }} />
-            <Stack.Screen name="profile" options={{ title: 'Thông tin cá nhân' }} />
-            <Stack.Screen name="change-password" options={{ title: 'Đổi mật khẩu' }} />
-            <Stack.Screen name="settings" options={{ title: 'Cài đặt' }} />
+            <Stack.Screen name="profile" options={{ title: 'Thông tin cá nhân' }} />            <Stack.Screen name="settings" options={{ title: 'Cài đặt' }} />
           </Stack>
         </ToastProvider>
       </SafeAreaProvider>

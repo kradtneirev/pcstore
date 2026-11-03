@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, Text } from 'react-native';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Card, Input } from '../components/ui';
+import ChangePasswordCard from '../components/ChangePasswordCard';
 import { colors } from '../constants/theme';
 import { useToast } from '../context/ToastContext';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -9,6 +11,7 @@ import { updateProfile } from '../store/authSlice';
 
 export default function ProfileScreen() {
   const user = useAppSelector((s) => s.auth.user);
+  const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const toast = useToast();
   const [name, setName] = useState(user?.name ?? '');
@@ -41,7 +44,7 @@ export default function ProfileScreen() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <ScrollView contentContainerStyle={{ padding: 16 }} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: insets.bottom + 24 }} keyboardShouldPersistTaps="handled">
         <Card>
           <Input label="Email (không thể thay đổi)" icon="email" value={user.email} editable={false} />
           <Input label="Họ và tên" icon="account-outline" value={name} onChangeText={setName} />
@@ -57,6 +60,7 @@ export default function ProfileScreen() {
           {error ? <Text style={{ color: colors.danger, fontWeight: '600', marginBottom: 12 }}>{error}</Text> : null}
           <Button title="Lưu thay đổi" onPress={save} loading={saving} />
         </Card>
+        <ChangePasswordCard />
       </ScrollView>
     </KeyboardAvoidingView>
   );

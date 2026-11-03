@@ -37,8 +37,7 @@ export default function AccountScreen() {
     .join('');
 
   const menu: { icon: IconName; title: string; onPress: () => void; hidden?: boolean }[] = [
-    { icon: 'account-circle', title: 'Thông tin cá nhân', onPress: () => router.push('/profile'), hidden: !token },
-    { icon: 'lock', title: 'Đổi mật khẩu', onPress: () => router.push('/change-password'), hidden: !token },
+    { icon: 'account-circle', title: 'Thông tin cá nhân & mật khẩu', onPress: () => router.push('/profile'), hidden: !token },
     { icon: 'receipt-text', title: 'Đơn hàng của tôi', onPress: () => router.navigate('/orders'), hidden: !token },
     { icon: 'cart-outline', title: 'Giỏ hàng', onPress: () => router.navigate('/cart') },
     { icon: 'server-network', title: 'Cài đặt máy chủ', onPress: () => router.push('/settings') },
