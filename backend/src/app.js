@@ -13,6 +13,7 @@ const {
   validateShipping,
   PAYMENT_METHODS,
   PAYMENT_TIMEOUT_MINUTES,
+  MAX_QTY_PER_ITEM,
 } = require('./logic');
 
 const PAYMENT_LABELS = {
@@ -288,6 +289,52 @@ function createApp() {
     res.json({ token: signToken(req.user, db.get().secret), user: publicUser(req.user) });
   });
 
+  // ---------- Giỏ hàng (lưu theo tài khoản) ----------
+  // Chỉ lưu mã sản phẩm, số lượng, đã chọn; tên/giá/tồn kho/ảnh luôn lấy mới nhất khi trả về
+  function cartView(user) {
+    const data = db.get();
+    return (user.cart ?? [])
+      .map((line) => {
+        const p = data.products.find((x) => x.id === line.productId);
+        if (!p) return null;
+        return {
+          productId: p.id,
+          name: p.name,
+          brand: p.brand,
+          category: p.category,
+          price: p.price,
+          oldPrice: p.oldPrice,
+          stock: p.stock,
+          image: imageFor(p.id),
+          quantity: line.quantity,
+          selected: line.selected,
+        };
+      })
+      .filter(Boolean);
+  }
+
+  app.get('/api/cart', requireAuth, (req, res) => {
+    res.json({ items: cartView(req.user) });
+  });
+
+  app.put('/api/cart', requireAuth, (req, res) => {
+    const data = db.get();
+    const raw = req.body?.items;
+    if (!Array.isArray(raw) || raw.length > 50) throw new ApiError(400, 'Giỏ hàng không hợp lệ');
+    const cart = [];
+    for (const it of raw) {
+      const productId = String(it?.productId ?? '');
+      const quantity = Number(it?.quantity);
+      if (!data.products.some((p) => p.id === productId)) continue; // bỏ sản phẩm không còn bán
+      if (!Number.isInteger(quantity) || quantity < 1) throw new ApiError(400, 'Số lượng sản phẩm không hợp lệ');
+      if (cart.some((c) => c.productId === productId)) continue;
+      cart.push({ productId, quantity: Math.min(quantity, MAX_QTY_PER_ITEM), selected: it?.selected !== false });
+    }
+    req.user.cart = cart;
+    db.save();
+    res.json({ items: cartView(req.user) });
+  });
+
   // ---------- Đơn hàng ----------
   app.post('/api/orders/quote', (req, res) => {
     const data = db.get();
@@ -353,6 +400,8 @@ function createApp() {
       createdAt: now.toISOString(),
     };
     data.orders.push(order);
+    // Bỏ các sản phẩm vừa đặt khỏi giỏ hàng của tài khoản
+    req.user.cart = (req.user.cart ?? []).filter((c) => !quote.items.some((i) => i.productId === c.productId));
     db.save();
     res.status(201).json({ order: withItemImages(order) });
   });

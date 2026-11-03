@@ -60,6 +60,7 @@ test('tài khoản, đơn hàng, tồn kho còn nguyên sau khi khởi động l
     reg.data.token,
   );
   assert.equal(order.status, 201);
+  await s.call('PUT', '/cart', { items: [{ productId: 'p041', quantity: 3, selected: true }] }, reg.data.token);
   await s.stop();
 
   // Giả lập seed.js đổi tên sản phẩm: tên mới phải theo code, tồn kho giữ theo dữ liệu đã lưu
@@ -77,6 +78,8 @@ test('tài khoản, đơn hàng, tồn kho còn nguyên sau khi khởi động l
   assert.equal(orders.status, 200);
   assert.equal(orders.data.orders.length, 1);
   assert.equal(orders.data.orders[0].id, order.data.order.id);
+  const cart = await s.call('GET', '/cart', null, reg.data.token);
+  assert.deepEqual(cart.data.items.map((i) => [i.productId, i.quantity]), [['p041', 3]], 'giỏ hàng còn sau khi khởi động lại');
   const p = (await s.call('GET', '/products/p001')).data.product;
   assert.equal(p.stock, stock0 - 2);
   assert.equal(p.name, 'Intel Core i5-14400F');

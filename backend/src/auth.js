@@ -30,9 +30,9 @@ function verifyToken(token, secret) {
   }
 }
 
-// Bỏ trường mật khẩu và phiên bản token trước khi trả user về cho app
+// Bỏ mật khẩu, phiên bản token và giỏ hàng (có API riêng) trước khi trả user về cho app
 function publicUser(user) {
-  const { password, tokenVersion, ...rest } = user;
+  const { password, tokenVersion, cart, ...rest } = user;
   return rest;
 }
 

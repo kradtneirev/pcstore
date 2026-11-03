@@ -139,6 +139,38 @@ test('đổi mật khẩu: đăng xuất thiết bị khác, giữ thiết bị 
   assert.equal((await call('POST', '/auth/login', { identifier: 'doimk@test.vn', password: 'moi12345' })).status, 200);
 });
 
+test('giỏ hàng lưu theo tài khoản', async () => {
+  const a = (await call('POST', '/auth/register', { name: 'Giỏ A', email: 'gioa@test.vn', phone: '0955000111', password: 'gioa123' })).data.token;
+  const b = (await call('POST', '/auth/register', { name: 'Giỏ B', email: 'giob@test.vn', phone: '0955000222', password: 'giob123' })).data.token;
+  assert.equal((await call('GET', '/cart')).status, 401);
+  assert.deepEqual((await call('GET', '/cart', null, a)).data.items, []);
+
+  const put = await call('PUT', '/cart', {
+    items: [
+      { productId: 'p001', quantity: 2, selected: true },
+      { productId: 'p041', quantity: 50, selected: false },
+      { productId: 'khong-co', quantity: 1 },
+      { productId: 'p001', quantity: 9 },
+    ],
+  }, a);
+  assert.equal(put.status, 200);
+  assert.deepEqual(put.data.items.map((i) => [i.productId, i.quantity, i.selected]), [['p001', 2, true], ['p041', 10, false]]);
+  assert.equal(put.data.items[0].name, 'Intel Core i5-14400F', 'trả kèm tên/giá mới nhất');
+  assert.equal(typeof put.data.items[0].price, 'number');
+  assert.equal((await call('PUT', '/cart', { items: [{ productId: 'p001', quantity: 0 }] }, a)).status, 400);
+
+  // Đăng nhập lại (token mới) vẫn thấy giỏ; tài khoản khác không thấy
+  const again = (await call('POST', '/auth/login', { identifier: 'gioa@test.vn', password: 'gioa123' })).data.token;
+  assert.equal((await call('GET', '/cart', null, again)).data.items.length, 2);
+  assert.deepEqual((await call('GET', '/cart', null, b)).data.items, []);
+  assert.equal((await call('GET', '/auth/me', null, a)).data.user.cart, undefined, 'không trả giỏ hàng trong thông tin tài khoản');
+
+  // Đặt hàng xong thì sản phẩm đã mua rời khỏi giỏ
+  const order = await call('POST', '/orders', { items: [{ productId: 'p001', quantity: 2 }], shipping, paymentMethod: 'cod' }, a);
+  assert.equal(order.status, 201);
+  assert.deepEqual((await call('GET', '/cart', null, a)).data.items.map((i) => i.productId), ['p041']);
+});
+
 test('báo giá: phí ship, mã giảm giá, tồn kho', async () => {
   const small = await call('POST', '/orders/quote', { items: [{ productId: 'p041', quantity: 1 }] });
   assert.equal(small.data.shippingFee, 30000);

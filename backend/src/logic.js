@@ -173,6 +173,7 @@ function validateShipping(s) {
 
 module.exports = {
   PAYMENT_TIMEOUT_MINUTES,
+  MAX_QTY_PER_ITEM,
   PAYMENT_METHODS,
   ApiError,
   normalizeText,

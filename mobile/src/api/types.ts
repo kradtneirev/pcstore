@@ -112,6 +112,20 @@ export interface Order {
   createdAt: string;
 }
 
+// Một dòng trong giỏ hàng (máy chủ trả kèm tên/giá/tồn kho/ảnh mới nhất)
+export interface CartItem {
+  productId: string;
+  name: string;
+  brand: string;
+  category: string;
+  price: number;
+  oldPrice: number | null;
+  stock: number;
+  quantity: number;
+  selected: boolean; // được chọn để thanh toán
+  image?: string | null;
+}
+
 export interface Coupon {
   code: string;
   description: string;

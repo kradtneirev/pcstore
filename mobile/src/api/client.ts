@@ -1,4 +1,5 @@
 import type {
+  CartItem,
   Category,
   Coupon,
   HomeData,
@@ -126,6 +127,10 @@ export const api = {
       body: { currentPassword, newPassword },
       auth: true,
     }),
+
+  getCart: () => request<{ items: CartItem[] }>('/cart', { auth: true }),
+  saveCart: (items: { productId: string; quantity: number; selected: boolean }[]) =>
+    request<{ items: CartItem[] }>('/cart', { method: 'PUT', body: { items }, auth: true }),
 
   quote: (items: CartLine[], couponCode?: string) =>
     request<Quote>('/orders/quote', { method: 'POST', body: { items, couponCode } }),

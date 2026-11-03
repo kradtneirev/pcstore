@@ -5,7 +5,7 @@ import { NavigationBar } from 'expo-navigation-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { restoreState, startPersisting, store } from '../store';
+import { loadAccountCart, restoreState, startPersisting, store } from '../store';
 import { fetchMe } from '../store/authSlice';
 import { ToastProvider } from '../context/ToastContext';
 import { colors } from '../constants/theme';
@@ -24,7 +24,10 @@ export default function RootLayout() {
         unsubscribe = startPersisting();
         setReady(true);
         SplashScreen.hideAsync().catch(() => {});
-        if (store.getState().auth.token) store.dispatch(fetchMe());
+        if (store.getState().auth.token) {
+          store.dispatch(fetchMe());
+          loadAccountCart(false); // giỏ hàng trên máy chủ là bản mới nhất (có thể đã sửa trên máy khác)
+        }
       });
     return () => unsubscribe?.();
   }, []);

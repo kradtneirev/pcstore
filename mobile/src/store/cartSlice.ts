@@ -1,20 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { Product } from '../api/types';
+import type { CartItem, Product } from '../api/types';
+import { logout } from './authSlice';
+
+export type { CartItem };
 
 const MAX_QTY_PER_ITEM = 10;
-
-export interface CartItem {
-  productId: string;
-  name: string;
-  brand: string;
-  category: string;
-  price: number;
-  oldPrice: number | null;
-  stock: number;
-  quantity: number;
-  selected: boolean; // được chọn để thanh toán
-  image?: string | null;
-}
 
 interface CartState {
   items: CartItem[];
@@ -94,6 +84,12 @@ const cartSlice = createSlice({
     hydrateCart(state, action: PayloadAction<CartItem[]>) {
       state.items = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    // Giỏ hàng thuộc về tài khoản (đã lưu trên máy chủ): đăng xuất thì xóa khỏi máy
+    builder.addCase(logout, (state) => {
+      state.items = [];
+    });
   },
 });
 
