@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Constants from 'expo-constants';
 
 // Địa chỉ máy chủ mặc định lấy từ app.json (expo.extra.apiUrl)
-export const DEFAULT_API_URL: string = (Constants.expoConfig?.extra?.apiUrl as string | undefined) ?? 'http://192.168.1.252:4000';
+export const DEFAULT_API_URL: string = (Constants.expoConfig?.extra?.apiUrl as string | undefined) ?? 'https://pcstore-api-dbh6.onrender.com';
 
 interface SettingsState {
   apiUrl: string;

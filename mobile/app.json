@@ -45,7 +45,7 @@
       "reactCompiler": true
     },
     "extra": {
-      "apiUrl": "http://192.168.1.252:4000"
+      "apiUrl": "https://pcstore-api-dbh6.onrender.com"
     }
   }
 }

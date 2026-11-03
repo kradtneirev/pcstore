@@ -7,7 +7,16 @@ Gồm 2 phần:
 | `backend/` | Node.js + Express, lưu dữ liệu bằng file JSON | REST API: sản phẩm, tìm kiếm, tài khoản, giỏ hàng/báo giá, đơn hàng, thanh toán |
 | `mobile/` | React Native + Expo SDK 57 (Expo Router, Redux Toolkit) | Ứng dụng Android (APK) |
 
-## 1. Chạy backend
+## 1. Backend
+
+**Link API công khai (Render.com):** https://pcstore-api-dbh6.onrender.com — app dùng link này mặc định, không cần bật máy tính.
+Ví dụ: https://pcstore-api-dbh6.onrender.com/api/products?q=rtx
+
+- Gói miễn phí: server "ngủ" sau 15 phút không dùng, lần mở đầu chờ khoảng 30–50 giây.
+- Đơn hàng/tài khoản mới tạo bị xóa khi server khởi động lại; sản phẩm, ảnh và tài khoản demo luôn còn.
+- Mỗi lần `git push` lên GitHub, Render tự triển khai lại (cấu hình trong `render.yaml`).
+
+Chạy backend trên máy (tùy chọn):
 
 ```bash
 cd backend
@@ -26,10 +35,9 @@ Màn hình sẽ in ra địa chỉ để nhập vào app, ví dụ `http://192.1
 
 File APK: `PCStore.apk` (cùng thư mục với file này).
 
-1. Copy file APK vào điện thoại và cài đặt (cho phép "Cài ứng dụng không rõ nguồn gốc" nếu được hỏi).
-2. Điện thoại và máy tính chạy backend phải **cùng mạng Wi-Fi**.
-3. Nếu IP máy tính khác `192.168.1.252`: vào **Tài khoản → Cài đặt máy chủ**, nhập địa chỉ backend in ra ở bước 1, bấm **Kiểm tra** rồi **Lưu**.
-   - Trên máy ảo Android có thể dùng `http://10.0.2.2:4000`.
+1. Gửi file APK cho điện thoại (Zalo, Google Drive, cáp USB...) và cài đặt (cho phép "Cài ứng dụng không rõ nguồn gốc" nếu được hỏi).
+2. Điện thoại chỉ cần có Internet, app tự kết nối tới link API trên Render.
+3. Muốn dùng backend chạy trên máy tính: vào **Tài khoản → Cài đặt máy chủ**, nhập `http://<IP máy tính>:4000`, bấm **Kiểm tra** rồi **Lưu** (điện thoại và máy tính phải cùng Wi-Fi).
 
 ## 3. Chức năng
 
