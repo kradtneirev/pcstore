@@ -13,7 +13,9 @@ Gồm 2 phần:
 Ví dụ: https://pcstore-api-dbh6.onrender.com/api/products?q=rtx
 
 - Gói miễn phí: server "ngủ" sau 15 phút không dùng, lần mở đầu chờ khoảng 30–50 giây.
-- Đơn hàng/tài khoản mới tạo bị xóa khi server khởi động lại; sản phẩm, ảnh và tài khoản demo luôn còn.
+- Lưu dữ liệu: đặt biến `MONGODB_URI` (MongoDB Atlas) trong Render → Environment thì tài khoản, đơn hàng,
+  tồn kho được lưu vĩnh viễn. Không đặt thì lưu bằng file và bị xóa mỗi khi server khởi động lại.
+- Danh sách sản phẩm luôn theo `backend/src/seed.js` (sửa và push là cập nhật), tồn kho/số đã bán được giữ nguyên.
 - Mỗi lần `git push` lên GitHub, Render tự triển khai lại (cấu hình trong `render.yaml`).
 
 Chạy backend trên máy (tùy chọn):

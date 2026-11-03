@@ -6,7 +6,8 @@ services:
     plan: free
     region: singapore
     rootDir: backend
-    buildCommand: npm ci
+    # Bỏ thư viện chỉ dùng để chạy test (mongodb-memory-server)
+    buildCommand: npm ci --omit=dev
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
@@ -14,3 +15,6 @@ services:
         value: "22"
       - key: JWT_SECRET
         generateValue: true
+      # Chuỗi kết nối MongoDB Atlas, nhập trong Render > Environment (không lưu trong code)
+      - key: MONGODB_URI
+        sync: false

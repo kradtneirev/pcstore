@@ -23,7 +23,7 @@ let server;
 let base;
 
 before(async () => {
-  db.reset();
+  await db.reset();
   server = createApp().listen(0);
   await new Promise((r) => server.once('listening', r));
   base = `http://127.0.0.1:${server.address().port}/api`;
