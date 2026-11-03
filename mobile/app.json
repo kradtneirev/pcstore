@@ -19,6 +19,7 @@
     },
     "plugins": [
       "expo-router",
+      ["expo-navigation-bar", { "style": "dark", "enforceContrast": false }],
       [
         "expo-splash-screen",
         {

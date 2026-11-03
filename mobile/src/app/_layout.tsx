@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { NavigationBar } from 'expo-navigation-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -35,6 +36,8 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <ToastProvider>
           <StatusBar style="dark" />
+          {/* Nút điều hướng Android (◁ ○ □) màu tối để nổi trên nền sáng của app */}
+          <NavigationBar style="dark" />
           <Stack
             screenOptions={{
               headerShadowVisible: false,
