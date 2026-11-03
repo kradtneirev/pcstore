@@ -120,7 +120,12 @@ function createApp() {
   }
 
   app.get('/api/health', (req, res) => {
-    res.json({ ok: true, name: 'PC Store API', time: new Date().toISOString() });
+    res.json({
+      ok: true,
+      name: 'PC Store API',
+      storage: db.storageName().startsWith('MongoDB') ? 'mongodb' : 'file',
+      time: new Date().toISOString(),
+    });
   });
 
   app.get('/api/categories', (req, res) => {
