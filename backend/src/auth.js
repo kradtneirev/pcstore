@@ -16,21 +16,23 @@ function verifyPassword(password, stored) {
   return expected.length === candidate.length && crypto.timingSafeEqual(candidate, expected);
 }
 
-function signToken(userId, secret) {
-  return jwt.sign({ sub: userId }, secret, { expiresIn: '30d' });
+// ver = số lần đổi mật khẩu; đổi mật khẩu thì token cũ (ver cũ) hết hiệu lực
+function signToken(user, secret) {
+  return jwt.sign({ sub: user.id, ver: user.tokenVersion ?? 0 }, secret, { expiresIn: '30d' });
 }
 
 function verifyToken(token, secret) {
   try {
-    return jwt.verify(token, secret).sub;
+    const payload = jwt.verify(token, secret);
+    return { userId: payload.sub, ver: payload.ver ?? 0 };
   } catch {
     return null;
   }
 }
 
-// Bỏ trường mật khẩu trước khi trả user về cho app
+// Bỏ trường mật khẩu và phiên bản token trước khi trả user về cho app
 function publicUser(user) {
-  const { password, ...rest } = user;
+  const { password, tokenVersion, ...rest } = user;
   return rest;
 }
 

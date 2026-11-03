@@ -120,6 +120,12 @@ export const api = {
   me: () => request<{ user: User }>('/auth/me', { auth: true }),
   updateMe: (body: Partial<Pick<User, 'name' | 'phone' | 'address'>>) =>
     request<{ user: User }>('/auth/me', { method: 'PUT', body, auth: true }),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    request<{ token: string; user: User }>('/auth/password', {
+      method: 'PUT',
+      body: { currentPassword, newPassword },
+      auth: true,
+    }),
 
   quote: (items: CartLine[], couponCode?: string) =>
     request<Quote>('/orders/quote', { method: 'POST', body: { items, couponCode } }),

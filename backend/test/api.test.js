@@ -115,6 +115,30 @@ test('đăng ký, đăng nhập, cập nhật hồ sơ', async () => {
   assert.equal((await call('GET', '/auth/me', null, 'token-sai')).status, 401);
 });
 
+test('đổi mật khẩu: đăng xuất thiết bị khác, giữ thiết bị hiện tại', async () => {
+  await call('POST', '/auth/register', { name: 'Đổi MK', email: 'doimk@test.vn', phone: '0966111222', password: 'cu12345' });
+  const phoneA = (await call('POST', '/auth/login', { identifier: 'doimk@test.vn', password: 'cu12345' })).data.token;
+  const phoneB = (await call('POST', '/auth/login', { identifier: 'doimk@test.vn', password: 'cu12345' })).data.token;
+
+  const wrong = await call('PUT', '/auth/password', { currentPassword: 'sai', newPassword: 'moi12345' }, phoneA);
+  assert.equal(wrong.status, 400);
+  assert.match(wrong.data.message, /hiện tại không đúng/);
+  assert.equal((await call('PUT', '/auth/password', { currentPassword: 'cu12345', newPassword: '123' }, phoneA)).status, 400);
+  assert.equal((await call('PUT', '/auth/password', { currentPassword: 'cu12345', newPassword: 'cu12345' }, phoneA)).status, 400);
+  assert.equal((await call('PUT', '/auth/password', { currentPassword: 'cu12345', newPassword: 'moi12345' })).status, 401);
+
+  const ok = await call('PUT', '/auth/password', { currentPassword: 'cu12345', newPassword: 'moi12345' }, phoneA);
+  assert.equal(ok.status, 200);
+  assert.ok(ok.data.token);
+  assert.equal(ok.data.user.tokenVersion, undefined, 'không trả phiên bản token về app');
+
+  assert.equal((await call('GET', '/auth/me', null, ok.data.token)).status, 200, 'thiết bị vừa đổi vẫn dùng được');
+  assert.equal((await call('GET', '/auth/me', null, phoneA)).status, 401, 'token cũ hết hiệu lực');
+  assert.equal((await call('GET', '/auth/me', null, phoneB)).status, 401, 'thiết bị khác bị đăng xuất');
+  assert.equal((await call('POST', '/auth/login', { identifier: 'doimk@test.vn', password: 'cu12345' })).status, 401);
+  assert.equal((await call('POST', '/auth/login', { identifier: 'doimk@test.vn', password: 'moi12345' })).status, 200);
+});
+
 test('báo giá: phí ship, mã giảm giá, tồn kho', async () => {
   const small = await call('POST', '/orders/quote', { items: [{ productId: 'p041', quantity: 1 }] });
   assert.equal(small.data.shippingFee, 30000);

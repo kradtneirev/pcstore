@@ -55,6 +55,19 @@ export const updateProfile = createAsyncThunk<User, Partial<Pick<User, 'name' | 
   },
 );
 
+// Đổi mật khẩu: máy chủ trả token mới (các thiết bị khác bị đăng xuất)
+export const changePassword = createAsyncThunk<
+  { token: string; user: User },
+  { currentPassword: string; newPassword: string },
+  { rejectValue: string }
+>('auth/changePassword', async ({ currentPassword, newPassword }, { rejectWithValue }) => {
+  try {
+    return await api.changePassword(currentPassword, newPassword);
+  } catch (e) {
+    return rejectWithValue(errorMessage(e));
+  }
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -83,6 +96,10 @@ const authSlice = createSlice({
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.user = action.payload;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.token = action.payload.token;
+        state.user = action.payload.user;
       });
   },
 });

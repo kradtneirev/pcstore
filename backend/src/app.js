@@ -76,8 +76,12 @@ function createApp() {
     const header = req.headers.authorization || '';
     const token = header.startsWith('Bearer ') ? header.slice(7) : null;
     const data = db.get();
-    const userId = token ? verifyToken(token, data.secret) : null;
-    const user = userId ? data.users.find((u) => u.id === userId) : null;
+    const payload = token ? verifyToken(token, data.secret) : null;
+    const user = payload ? data.users.find((u) => u.id === payload.userId) : null;
+    // Token tạo trước lần đổi mật khẩu gần nhất thì không còn hợp lệ
+    if (user && (user.tokenVersion ?? 0) !== payload.ver) {
+      return next(new ApiError(401, 'Mật khẩu đã được thay đổi, vui lòng đăng nhập lại'));
+    }
     if (!user) return next(new ApiError(401, 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại'));
     req.user = user;
     next();
@@ -237,7 +241,7 @@ function createApp() {
     };
     data.users.push(user);
     db.save();
-    res.status(201).json({ token: signToken(user.id, data.secret), user: publicUser(user) });
+    res.status(201).json({ token: signToken(user, data.secret), user: publicUser(user) });
   }));
 
   app.post('/api/auth/login', wrap(async (req, res) => {
@@ -249,7 +253,7 @@ function createApp() {
     if (!user || !verifyPassword(password, user.password)) {
       throw new ApiError(401, 'Thông tin đăng nhập không chính xác');
     }
-    res.json({ token: signToken(user.id, data.secret), user: publicUser(user) });
+    res.json({ token: signToken(user, data.secret), user: publicUser(user) });
   }));
 
   app.get('/api/auth/me', requireAuth, (req, res) => {
@@ -269,6 +273,19 @@ function createApp() {
     Object.assign(req.user, { name, phone, address });
     db.save();
     res.json({ user: publicUser(req.user) });
+  });
+
+  app.put('/api/auth/password', requireAuth, (req, res) => {
+    const current = String(req.body?.currentPassword ?? '');
+    const next = String(req.body?.newPassword ?? '');
+    if (!verifyPassword(current, req.user.password)) throw new ApiError(400, 'Mật khẩu hiện tại không đúng');
+    if (next.length < 6) throw new ApiError(400, 'Mật khẩu mới phải có ít nhất 6 ký tự');
+    if (next === current) throw new ApiError(400, 'Mật khẩu mới phải khác mật khẩu hiện tại');
+    req.user.password = hashPassword(next);
+    // Đăng xuất mọi thiết bị khác; thiết bị hiện tại nhận token mới
+    req.user.tokenVersion = (req.user.tokenVersion ?? 0) + 1;
+    db.save();
+    res.json({ token: signToken(req.user, db.get().secret), user: publicUser(req.user) });
   });
 
   // ---------- Đơn hàng ----------
