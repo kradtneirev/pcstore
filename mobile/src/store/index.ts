@@ -30,9 +30,6 @@ configureApi({
 // ---------- Selectors ----------
 export const selectCartCount = (s: RootState) => s.cart.items.reduce((n, i) => n + i.quantity, 0);
 export const selectSelectedItems = createSelector([(s: RootState) => s.cart.items], (items) => items.filter((i) => i.selected));
-export const selectSelectedTotal = createSelector([selectSelectedItems], (items) =>
-  items.reduce((sum, i) => sum + i.price * i.quantity, 0),
-);
 
 // ---------- Lưu/khôi phục bằng AsyncStorage ----------
 const KEYS = { cart: 'pcstore:cart', auth: 'pcstore:auth', settings: 'pcstore:settings' } as const;

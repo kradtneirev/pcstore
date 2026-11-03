@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Product } from '../api/types';
 
-export const MAX_QTY_PER_ITEM = 10;
+const MAX_QTY_PER_ITEM = 10;
 
 export interface CartItem {
   productId: string;

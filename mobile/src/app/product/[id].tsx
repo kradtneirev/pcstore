@@ -104,7 +104,7 @@ export default function ProductDetailScreen() {
           size={300 + insets.top}
           rounded={0}
           iconSize={130}
-          style={product.image ? { paddingTop: insets.top, borderWidth: 0 } : undefined}
+          style={product.image ? { borderWidth: 0 } : undefined}
         />
 
         <View style={styles.infoCard}>

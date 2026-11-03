@@ -2,9 +2,7 @@ import { Platform, ViewStyle } from 'react-native';
 
 export const colors = {
   primary: '#4F46E5',
-  primaryDark: '#4338CA',
   primarySoft: '#EEF2FF',
-  violet: '#7C3AED',
   accent: '#F97316',
   accentSoft: '#FFF7ED',
   bg: '#F4F6FB',
@@ -29,8 +27,6 @@ export const gradients = {
 };
 
 export const radius = { sm: 8, md: 12, lg: 16, xl: 22, pill: 999 } as const;
-
-export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24 } as const;
 
 export function shadow(level: 1 | 2 | 3 = 1): ViewStyle {
   const map = {

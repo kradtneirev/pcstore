@@ -172,9 +172,6 @@ function validateShipping(s) {
 }
 
 module.exports = {
-  SHIPPING_FEE,
-  FREE_SHIPPING_FROM,
-  MAX_QTY_PER_ITEM,
   PAYMENT_TIMEOUT_MINUTES,
   PAYMENT_METHODS,
   ApiError,
@@ -183,5 +180,4 @@ module.exports = {
   luhnValid,
   validateCard,
   validateShipping,
-  formatVnd,
 };

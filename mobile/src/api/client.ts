@@ -107,7 +107,6 @@ export interface CardInput {
 export const api = {
   health: (baseUrl?: string) => request<{ ok: boolean }>('/health', { baseUrl }),
   home: () => request<HomeData>('/home'),
-  categories: () => request<Category[]>('/categories'),
   brands: (category?: string) => request<string[]>(`/brands${toQuery({ category })}`),
   products: (q: ProductQuery) => request<ProductPage>(`/products${toQuery({ ...q })}`),
   product: (id: string) =>

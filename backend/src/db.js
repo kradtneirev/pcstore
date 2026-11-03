@@ -188,4 +188,4 @@ async function close() {
 
 const storageName = () => (mdb ? `MongoDB (${mdb.databaseName})` : DB_FILE);
 
-module.exports = { init, get, save, flush, reset, close, storageName, DB_FILE };
+module.exports = { init, get, save, reset, close, storageName };
