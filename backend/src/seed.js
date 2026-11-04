@@ -192,7 +192,7 @@ const coupons = [
 
 const banners = [
   { id: 'b1', title: 'Siêu sale linh kiện', subtitle: 'Giảm đến 14% CPU & VGA', colors: ['#4F46E5', '#7C3AED'], icon: 'lightning-bolt', category: 'vga' },
-  { id: 'b2', title: 'Nhập PCSTORE10', subtitle: 'Giảm 10% cho đơn từ 1 triệu', colors: ['#F97316', '#DB2777'], icon: 'ticket-percent', category: null },
+  { id: 'b2', title: 'Nhập PCSTORE100', subtitle: 'Giảm 100% cho đơn từ 1 triệu', colors: ['#F97316', '#DB2777'], icon: 'ticket-percent', category: null },
   { id: 'b3', title: 'Màn hình gaming', subtitle: '200Hz chỉ từ 3,59 triệu', colors: ['#0EA5E9', '#10B981'], icon: 'monitor', category: 'monitor' },
 ];
 
