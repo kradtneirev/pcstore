@@ -185,7 +185,7 @@ function buildProducts() {
 }
 
 const coupons = [
-  { code: 'PCSTORE10', type: 'percent', value: 10, maxDiscount: 500000, minSubtotal: 1000000, description: 'Giảm 10% tối đa 500.000đ cho đơn từ 1.000.000đ' },
+  { code: 'PCSTORE100', type: 'percent', value: 100, maxDiscount: 500000000, minSubtotal: 1000000, description: 'Giảm 100% tối đa 500.000.000đ cho đơn từ 1.000.000đ' },
   { code: 'GIAM200K', type: 'fixed', value: 200000, maxDiscount: 200000, minSubtotal: 3000000, description: 'Giảm 200.000đ cho đơn từ 3.000.000đ' },
   { code: 'FREESHIP', type: 'shipping', value: 0, maxDiscount: 0, minSubtotal: 0, description: 'Miễn phí vận chuyển' },
 ];
