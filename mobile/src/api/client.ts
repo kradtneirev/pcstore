@@ -140,6 +140,7 @@ export const api = {
     shipping: { name: string; phone: string; address: string; note: string };
     paymentMethod: PaymentMethod;
     card?: CardInput;
+    keepCart?: boolean;
   }) => request<{ order: Order }>('/orders', { method: 'POST', body, auth: true }),
   orders: () => request<{ orders: Order[] }>('/orders', { auth: true }),
   order: (id: string) => request<{ order: Order }>(`/orders/${encodeURIComponent(id)}`, { auth: true }),

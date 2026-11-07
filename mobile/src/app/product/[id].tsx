@@ -13,7 +13,7 @@ import { colors, radius, shadow } from '../../constants/theme';
 import type { IconName } from '../../constants/categories';
 import { useToast } from '../../context/ToastContext';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { addToCart, maxQuantity, selectAll, syncProducts, toggleSelect } from '../../store/cartSlice';
+import { addToCart, maxQuantity, syncProducts } from '../../store/cartSlice';
 import { discountPercent, formatSold, formatVnd, formatWarranty } from '../../utils/format';
 
 export default function ProductDetailScreen() {
@@ -80,12 +80,10 @@ export default function ProductDetailScreen() {
     setQty(1);
   };
 
-  // Mua ngay: chỉ chọn sản phẩm này trong giỏ rồi chuyển sang thanh toán
+  // Mua ngay: thanh toán riêng sản phẩm này, không đụng tới giỏ hàng
   const handleBuyNow = () => {
-    dispatch(selectAll(false));
-    if (available > 0) dispatch(addToCart({ product, quantity: safeQty }));
-    else dispatch(toggleSelect(product.id));
-    router.push(isLoggedIn ? '/checkout' : '/login?redirect=/checkout');
+    const url = `/checkout?buyNow=${product.id}&qty=${safeQty}`;
+    router.push(isLoggedIn ? url : `/login?redirect=${encodeURIComponent(url)}`);
   };
 
   const perks: { icon: IconName; text: string }[] = [

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { api, ApiError, errorMessage } from '../api/client';
-import type { Coupon, PaymentMethod, Quote } from '../api/types';
+import type { Coupon, PaymentMethod, Quote, QuoteItem } from '../api/types';
 import ProductImage from '../components/ProductImage';
 import { Button, Card, Checkbox, Chip, EmptyState, Input, LoadingView, SectionTitle } from '../components/ui';
 import { colors, radius } from '../constants/theme';
@@ -32,9 +32,15 @@ export default function CheckoutScreen() {
   const user = useAppSelector((s) => s.auth.user);
   const token = useAppSelector((s) => s.auth.token);
   const selected = useAppSelector(selectSelectedItems);
+  // Mua ngay: thanh toán riêng 1 sản phẩm theo tham số, không dùng giỏ hàng
+  const { buyNow, qty } = useLocalSearchParams<{ buyNow?: string; qty?: string }>();
+  const buyQty = Math.max(1, Math.floor(Number(qty)) || 1);
   const lines = useMemo(
-    () => selected.filter((i) => i.stock > 0).map((i) => ({ productId: i.productId, quantity: i.quantity })),
-    [selected],
+    () =>
+      buyNow
+        ? [{ productId: buyNow, quantity: buyQty }]
+        : selected.filter((i) => i.stock > 0).map((i) => ({ productId: i.productId, quantity: i.quantity })),
+    [buyNow, buyQty, selected],
   );
   const linesKey = JSON.stringify(lines);
 
@@ -61,8 +67,11 @@ export default function CheckoutScreen() {
 
   // Phải đăng nhập mới được thanh toán
   useEffect(() => {
-    if (!token) router.replace('/login?redirect=/checkout');
-  }, [token]);
+    if (!token) {
+      const url = buyNow ? `/checkout?buyNow=${buyNow}&qty=${buyQty}` : '/checkout';
+      router.replace(`/login?redirect=${encodeURIComponent(url)}`);
+    }
+  }, [token, buyNow, buyQty]);
 
   // Điền sẵn thông tin khi tải xong tài khoản
   useEffect(() => {
@@ -152,9 +161,10 @@ export default function CheckoutScreen() {
         shipping: { name: name.trim(), phone: phone.replace(/\s/g, ''), address: address.trim(), note: note.trim() },
         paymentMethod: method,
         card: method === 'card' ? card : undefined,
+        keepCart: !!buyNow,
       });
       setPlaced(true);
-      dispatch(removeItems(order.items.map((i) => i.productId)));
+      if (!buyNow) dispatch(removeItems(order.items.map((i) => i.productId)));
       if (saveAddress && user && address.trim() !== user.address) {
         dispatch(updateProfile({ address: address.trim() }));
       }
@@ -188,6 +198,9 @@ export default function CheckoutScreen() {
   }
 
   const hasProblems = !!quote?.problems.length;
+  const shownItems: Pick<QuoteItem, 'productId' | 'name' | 'category' | 'image' | 'price' | 'quantity'>[] = buyNow
+    ? (quote?.items ?? [])
+    : selected.filter((i) => i.stock > 0);
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
@@ -222,27 +235,34 @@ export default function CheckoutScreen() {
 
         <Card>
           <SectionTitle title={`Sản phẩm (${lines.length})`} icon="package-variant" />
-          {selected
-            .filter((i) => i.stock > 0)
-            .map((i) => {
-              const q = quote?.items.find((x) => x.productId === i.productId);
-              const problem = quote?.problems.find((p) => p.productId === i.productId);
-              return (
-                <View key={i.productId} style={styles.line}>
-                  <ProductImage category={i.category} image={q?.image ?? i.image} size={54} showBrand={false} style={{ width: 54 }} rounded={radius.sm} />
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.lineName} numberOfLines={2}>
-                      {i.name}
-                    </Text>
-                    <Text style={styles.lineMeta}>
-                      {formatVnd(q?.price ?? i.price)} × {i.quantity}
-                    </Text>
-                    {problem ? <Text style={styles.problem}>{problem.message}</Text> : null}
-                  </View>
-                  <Text style={styles.lineTotal}>{formatVnd((q?.price ?? i.price) * i.quantity)}</Text>
+          {buyNow && !quote && !quoteError ? <ActivityIndicator color={colors.primary} /> : null}
+          {shownItems.map((i) => {
+            const q = quote?.items.find((x) => x.productId === i.productId);
+            const problem = quote?.problems.find((p) => p.productId === i.productId);
+            return (
+              <View key={i.productId} style={styles.line}>
+                <ProductImage category={i.category} image={q?.image ?? i.image} size={54} showBrand={false} style={{ width: 54 }} rounded={radius.sm} />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.lineName} numberOfLines={2}>
+                    {i.name}
+                  </Text>
+                  <Text style={styles.lineMeta}>
+                    {formatVnd(q?.price ?? i.price)} × {i.quantity}
+                  </Text>
+                  {problem ? <Text style={styles.problem}>{problem.message}</Text> : null}
                 </View>
-              );
-            })}
+                <Text style={styles.lineTotal}>{formatVnd((q?.price ?? i.price) * i.quantity)}</Text>
+              </View>
+            );
+          })}
+          {/* Mua ngay: sản phẩm không còn kinh doanh thì không có trong báo giá, chỉ hiện lý do */}
+          {buyNow && quote?.items.length === 0
+            ? quote.problems.map((p) => (
+                <Text key={p.productId} style={styles.problem}>
+                  {p.message}
+                </Text>
+              ))
+            : null}
         </Card>
 
         <Card>
@@ -396,7 +416,7 @@ export default function CheckoutScreen() {
           variant="accent"
           onPress={placeOrder}
           loading={placing}
-          disabled={!quote || hasProblems}
+          disabled={!quote || hasProblems || !!quoteError}
           style={{ minWidth: 160 }}
         />
       </View>

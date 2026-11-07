@@ -169,6 +169,11 @@ test('giỏ hàng lưu theo tài khoản', async () => {
   const order = await call('POST', '/orders', { items: [{ productId: 'p001', quantity: 2 }], shipping, paymentMethod: 'cod' }, a);
   assert.equal(order.status, 201);
   assert.deepEqual((await call('GET', '/cart', null, a)).data.items.map((i) => i.productId), ['p041']);
+
+  // Mua ngay (keepCart) không làm thay đổi giỏ, kể cả khi sản phẩm đang có trong giỏ
+  const buyNow = await call('POST', '/orders', { items: [{ productId: 'p041', quantity: 1 }], shipping, paymentMethod: 'cod', keepCart: true }, a);
+  assert.equal(buyNow.status, 201);
+  assert.deepEqual((await call('GET', '/cart', null, a)).data.items.map((i) => [i.productId, i.quantity]), [['p041', 10]]);
 });
 
 test('báo giá: phí ship, mã giảm giá, tồn kho', async () => {

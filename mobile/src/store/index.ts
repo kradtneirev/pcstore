@@ -45,7 +45,7 @@ configureApi({
 const toLines = (items: CartItem[]) => items.map(({ productId, quantity, selected }) => ({ productId, quantity, selected }));
 
 // Gộp giỏ hàng lúc chưa đăng nhập vào giỏ hàng của tài khoản.
-// Sản phẩm vừa chọn khi chưa đăng nhập (vd: "Mua ngay") được giữ là lựa chọn để thanh toán.
+// Sản phẩm vừa chọn khi chưa đăng nhập được giữ là lựa chọn để thanh toán.
 function mergeCarts(account: CartItem[], guest: CartItem[]) {
   const guestHasSelection = guest.some((g) => g.selected);
   const result = account.map((a) => ({ ...a, selected: guestHasSelection ? false : a.selected }));

@@ -400,8 +400,10 @@ function createApp() {
       createdAt: now.toISOString(),
     };
     data.orders.push(order);
-    // Bỏ các sản phẩm vừa đặt khỏi giỏ hàng của tài khoản
-    req.user.cart = (req.user.cart ?? []).filter((c) => !quote.items.some((i) => i.productId === c.productId));
+    // Bỏ các sản phẩm vừa đặt khỏi giỏ hàng của tài khoản (Mua ngay thì giữ nguyên giỏ)
+    if (!req.body?.keepCart) {
+      req.user.cart = (req.user.cart ?? []).filter((c) => !quote.items.some((i) => i.productId === c.productId));
+    }
     db.save();
     res.status(201).json({ order: withItemImages(order) });
   });

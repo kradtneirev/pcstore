@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { AppState, FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { api, errorMessage } from '../../api/client';
@@ -34,11 +34,18 @@ export default function OrdersScreen() {
     }
   }, []);
 
-  // Tải lại mỗi khi mở tab để thấy đơn mới / trạng thái mới
+  // Tải lại mỗi khi mở tab hoặc quay lại app để thấy đơn mới / trạng thái mới
   useFocusEffect(
     useCallback(() => {
-      if (token) load();
-      else setOrders(null);
+      if (!token) {
+        setOrders(null);
+        return;
+      }
+      load();
+      const sub = AppState.addEventListener('change', (state) => {
+        if (state === 'active') load();
+      });
+      return () => sub.remove();
     }, [token, load]),
   );
 
@@ -77,7 +84,7 @@ export default function OrdersScreen() {
           {FILTERS.map((f) => (
             <Chip
               key={f.id}
-              label={f.id === 'all' ? `${f.label} (${orders.length})` : f.label}
+              label={`${f.label} (${f.id === 'all' ? orders.length : orders.filter((o) => o.status === f.id).length})`}
               active={filter === f.id}
               onPress={() => setFilter(f.id)}
             />
