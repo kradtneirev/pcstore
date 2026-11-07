@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { AppState } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationBar } from 'expo-navigation-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { loadAccountCart, restoreState, startPersisting, store } from '../store';
+import { refreshCart, restoreState, startPersisting, store } from '../store';
 import { fetchMe } from '../store/authSlice';
 import { ToastProvider } from '../context/ToastContext';
 import { colors } from '../constants/theme';
@@ -26,10 +27,17 @@ export default function RootLayout() {
         SplashScreen.hideAsync().catch(() => {});
         if (store.getState().auth.token) {
           store.dispatch(fetchMe());
-          loadAccountCart(false); // giỏ hàng trên máy chủ là bản mới nhất (có thể đã sửa trên máy khác)
+          refreshCart();
         }
       });
-    return () => unsubscribe?.();
+    // Quay lại app: giỏ hàng có thể đã sửa trên máy khác
+    const appState = AppState.addEventListener('change', (state) => {
+      if (state === 'active') refreshCart();
+    });
+    return () => {
+      unsubscribe?.();
+      appState.remove();
+    };
   }, []);
 
   if (!ready) return null;

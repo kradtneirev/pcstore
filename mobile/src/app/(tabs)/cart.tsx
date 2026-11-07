@@ -1,12 +1,12 @@
-import { useCallback } from 'react';
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useState } from 'react';
+import { Alert, FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { api } from '../../api/client';
 import ProductImage from '../../components/ProductImage';
 import { Button, Checkbox, EmptyState, QuantityStepper } from '../../components/ui';
 import { colors, radius, shadow } from '../../constants/theme';
-import { selectSelectedItems, store, useAppDispatch, useAppSelector } from '../../store';
+import { refreshCart, selectSelectedItems, store, useAppDispatch, useAppSelector } from '../../store';
 import {
   CartItem,
   maxQuantity,
@@ -26,24 +26,41 @@ export default function CartScreen() {
   const items = useAppSelector((s) => s.cart.items);
   const selected = useAppSelector(selectSelectedItems);
   const isLoggedIn = useAppSelector((s) => !!s.auth.token);
+  const [refreshing, setRefreshing] = useState(false);
   const allSelected = items.length > 0 && selected.length === items.length;
   // Chỉ tính những sản phẩm được chọn và còn hàng
   const buyable = selected.filter((i) => i.stock > 0);
   const total = buyable.reduce((s, i) => s + i.price * i.quantity, 0);
   const buyableCount = buyable.reduce((n, i) => n + i.quantity, 0);
 
-  // Mỗi lần mở giỏ hàng thì cập nhật giá và tồn kho mới nhất
-  // (đọc thẳng từ store để không chạy lại mỗi lần đổi số lượng)
+  // Đã đăng nhập: lấy giỏ trên máy chủ (kèm giá, tồn kho mới nhất, có thể vừa sửa trên máy khác).
+  // Chưa đăng nhập: chỉ cập nhật giá và tồn kho.
+  // Đọc thẳng từ store để không chạy lại mỗi lần đổi số lượng
+  const reload = useCallback(async () => {
+    if (store.getState().auth.token) {
+      await refreshCart();
+      return;
+    }
+    const ids = store.getState().cart.items.map((i) => i.productId);
+    if (ids.length === 0) return;
+    await api
+      .products({ ids: ids.join(','), limit: 50 })
+      .then((res) => dispatch(syncProducts(res.items)))
+      .catch(() => {});
+  }, [dispatch]);
+
   useFocusEffect(
     useCallback(() => {
-      const ids = store.getState().cart.items.map((i) => i.productId);
-      if (ids.length === 0) return;
-      api
-        .products({ ids: ids.join(','), limit: 50 })
-        .then((res) => dispatch(syncProducts(res.items)))
-        .catch(() => {});
-    }, [dispatch]),
+      reload();
+    }, [reload]),
   );
+
+  const pullToRefresh = async () => {
+    setRefreshing(true);
+    await reload();
+    setRefreshing(false);
+  };
+  const refreshControl = <RefreshControl refreshing={refreshing} onRefresh={pullToRefresh} colors={[colors.primary]} />;
 
   const confirmRemove = (item: CartItem) =>
     Alert.alert('Xóa sản phẩm', `Bỏ "${item.name}" khỏi giỏ hàng?`, [
@@ -61,12 +78,14 @@ export default function CartScreen() {
 
   if (items.length === 0) {
     return (
-      <EmptyState
-        icon="cart-outline"
-        title="Giỏ hàng đang trống"
-        message="Hãy chọn những linh kiện bạn yêu thích nhé!"
-        action={{ title: 'Mua sắm ngay', onPress: () => router.navigate('/') }}
-      />
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} refreshControl={refreshControl}>
+        <EmptyState
+          icon="cart-outline"
+          title="Giỏ hàng đang trống"
+          message="Hãy chọn những linh kiện bạn yêu thích nhé!"
+          action={{ title: 'Mua sắm ngay', onPress: () => router.navigate('/') }}
+        />
+      </ScrollView>
     );
   }
 
@@ -90,6 +109,7 @@ export default function CartScreen() {
         data={items}
         keyExtractor={(i) => i.productId}
         contentContainerStyle={{ padding: 12, gap: 10 }}
+        refreshControl={refreshControl}
         renderItem={({ item }) => {
           const outOfStock = item.stock <= 0;
           return (

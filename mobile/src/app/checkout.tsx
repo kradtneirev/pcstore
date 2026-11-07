@@ -85,6 +85,11 @@ export default function CheckoutScreen() {
     api.coupons().then(setCoupons).catch(() => {});
   }, []);
 
+  // Sản phẩm đổi (vd: giỏ vừa sửa trên máy khác) thì bỏ báo giá cũ, khóa nút Đặt hàng tới khi có báo giá mới
+  useEffect(() => {
+    setQuote(null);
+  }, [linesKey]);
+
   // Tính tiền trên máy chủ mỗi khi sản phẩm hoặc mã giảm giá thay đổi
   useEffect(() => {
     const items = JSON.parse(linesKey);

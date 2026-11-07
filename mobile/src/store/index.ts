@@ -61,24 +61,40 @@ function mergeCarts(account: CartItem[], guest: CartItem[]) {
   return result;
 }
 
-/**
- * Tải giỏ hàng của tài khoản về máy.
- * mergeGuest = true (vừa đăng nhập): gộp thêm các sản phẩm đã bỏ vào giỏ lúc chưa đăng nhập.
- * mergeGuest = false (mở app khi đang đăng nhập): giỏ hàng trên máy chủ là bản mới nhất.
- */
-export async function loadAccountCart(mergeGuest: boolean) {
+let unsavedEdits = 0; // số việc đang sửa/gộp giỏ chưa xong; khác 0 thì không tải đè lên giỏ trên máy
+let cartVersion = 0; // tăng mỗi lần sửa giỏ, để bỏ kết quả tải về đã cũ
+let saveFailed = false; // lần lưu gần nhất bị lỗi: phải đưa giỏ trên máy lên trước khi tải về
+
+// Vừa đăng nhập: lấy giỏ hàng của tài khoản, gộp thêm các sản phẩm đã bỏ vào giỏ lúc chưa đăng nhập
+async function loadAccountCart() {
+  const { token } = store.getState().auth;
   const local = store.getState().cart.items;
+  unsavedEdits += 1;
   try {
     let { items } = await api.getCart();
-    if (mergeGuest && local.length > 0) {
-      items = (await api.saveCart(toLines(mergeCarts(items, local)))).items;
-    } else if (items.length === 0 && local.length > 0) {
-      // Máy chủ chưa có giỏ hàng (vd: vừa cập nhật từ bản app cũ): đưa giỏ hàng trên máy lên
-      items = (await api.saveCart(toLines(local))).items;
-    }
-    if (store.getState().auth.token) store.dispatch(hydrateCart(items));
+    if (local.length > 0) items = (await api.saveCart(toLines(mergeCarts(items, local)))).items;
+    saveFailed = false;
+    if (store.getState().auth.token === token) store.dispatch(hydrateCart(items));
   } catch {
-    // Lỗi mạng: giữ giỏ hàng hiện tại, lần thay đổi sau sẽ lưu lại
+    saveFailed = local.length > 0; // lỗi mạng: giữ giỏ hiện tại, lần sau lưu lại
+  } finally {
+    unsavedEdits -= 1;
+  }
+}
+
+/** Lấy giỏ hàng mới nhất trên máy chủ (có thể vừa sửa trên máy khác). */
+export async function refreshCart() {
+  const { token } = store.getState().auth;
+  if (!token || unsavedEdits > 0) return;
+  const version = cartVersion;
+  try {
+    const { items } = saveFailed ? await api.saveCart(toLines(store.getState().cart.items)) : await api.getCart();
+    saveFailed = false;
+    if (store.getState().auth.token === token && unsavedEdits === 0 && version === cartVersion) {
+      store.dispatch(hydrateCart(items));
+    }
+  } catch {
+    // Lỗi mạng: giữ giỏ hàng hiện tại
   }
 }
 
@@ -89,10 +105,21 @@ startListening({
   matcher: isAnyOf(addToCart, setQuantity, removeFromCart, removeItems, toggleSelect, selectAll, clearCart),
   effect: async (_action, { cancelActiveListeners, delay, getState }) => {
     cancelActiveListeners();
-    await delay(700);
-    const { auth, cart } = getState();
-    if (!auth.token) return; // chưa đăng nhập: chỉ giữ trên máy
-    await api.saveCart(toLines(cart.items)).catch(() => {});
+    cartVersion += 1;
+    unsavedEdits += 1;
+    try {
+      await delay(700);
+      const { auth, cart } = getState();
+      if (!auth.token) return; // chưa đăng nhập: chỉ giữ trên máy
+      try {
+        await api.saveCart(toLines(cart.items));
+        saveFailed = false;
+      } catch {
+        saveFailed = true;
+      }
+    } finally {
+      unsavedEdits -= 1;
+    }
   },
 });
 
@@ -100,7 +127,7 @@ startListening({
 startListening({
   matcher: isAnyOf(login.fulfilled, register.fulfilled),
   effect: async () => {
-    await loadAccountCart(true);
+    await loadAccountCart();
   },
 });
 
